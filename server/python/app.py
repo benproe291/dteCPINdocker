@@ -15,7 +15,7 @@ app = Flask(__name__)
 # Load the model
 
 # Replace 'model.joblib' with the path to your .joblib file
-model = joblib.load(r'C:\Users\benne\Documents\VictoryLap Capstone\dteCPINdocker\server\python\rf_model.pkl')
+model = joblib.load(r'rf_model.pkl')
 
 @app.route('/handle_data', methods=['GET', 'POST'])
 def index():
