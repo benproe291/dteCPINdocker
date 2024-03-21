@@ -2,14 +2,20 @@ from flask import Flask, request, render_template
 import pickle
 import numpy as np
 import pickle
+import joblib
+import os
+from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
+from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+print(os.getcwd())
 
 app = Flask(__name__)
 
 # Load the model
-from joblib import load
 
 # Replace 'model.joblib' with the path to your .joblib file
-model = load('rf.joblib')
+model = joblib.load(r'C:\Users\benne\Documents\VictoryLap Capstone\dteCPINdocker\server\python\rf_model.pkl')
 
 @app.route('/handle_data', methods=['GET', 'POST'])
 def index():
