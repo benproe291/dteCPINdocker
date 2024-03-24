@@ -1,7 +1,10 @@
-# Client Dockerfile
-FROM node:14
-WORKDIR /app
-COPY . /app
-RUN npm install
-EXPOSE 3000
-CMD ["npm", "start"]
+# # Client Dockerfile
+# FROM node:14
+# WORKDIR /app
+# COPY . /app
+# RUN npm install
+# EXPOSE 3000
+# CMD ["npm", "start"]
+
+FROM nginx:alpine
+COPY . /usr/share/nginx/html
