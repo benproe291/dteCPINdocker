@@ -4,7 +4,7 @@ services:
   server:
     build: ./server
     ports:
-      - "5001:5001"
+      - "5001:2001"
   client:
     build: ./client
     ports:
