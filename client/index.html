@@ -5,6 +5,8 @@
     <title>SE Michigan Weather Prediction</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="dtestyle.css" />
+    <script src="js/restrq.js"></script>
+    <script src="js/scripting.js"></script>
     
   </head>
   <body>
@@ -85,14 +87,16 @@
           <input type="submit" value="Submit" />
         </div>
       </form>
+      <p id="confirmation"></p>
     </div>
 
     <div class="resp-card">
 
       </a>
       <p id="prediction">Prediction will be displayed here.</p>
-      <div id="result">{{ prediction }} kW-h</div>
-      <script src="webpage/js/restrq.js"></script>
+      <p id="result">{{ prediction }} kW-h</p>
+
+
 
 
 </div>

@@ -27,7 +27,7 @@ def index():
         # Make a prediction.
         prediction = model.predict(input_data)
         # Return the result.
-        return render_template('index.html', prediction=prediction[0])
+        return render_template('index.html', prediction=prediction[0], input_data=data)
     return render_template('index.html')
 
 if __name__ == '__main__':
