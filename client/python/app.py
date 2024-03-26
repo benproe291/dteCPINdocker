@@ -8,14 +8,15 @@ from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-print(os.getcwd())
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Load the model
 
 # Replace 'model.joblib' with the path to your .joblib file
-model = joblib.load(r'rf_model.pkl')
+model = joblib.load(r'client/python/rf_model.pkl')
 
 @app.route('/handle_data', methods=['GET', 'POST'])
 def index():

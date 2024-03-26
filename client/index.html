@@ -34,7 +34,7 @@
     <div class="form-card">
       <h1>Energy Usage Forcasting</h1>
       <p>Enter the following information to predict the weather:</p>
-      <form method="post" id="hyperparameters" action="http://localhost:2001/handle_data">
+      <form method="post" id="hyperparameters" action="/handle_data">
         <input type="date" name="READING_START_DATE" placeholder="Date" />
         <div class="radio-buttons">
           <input type="radio" id="IN" name="ADID" value="IN" />
@@ -45,7 +45,7 @@
         <input
           type="number"
           name="AVG_TEMP"
-          placeholder="Average Temp   erature (Fº)"
+          placeholder="Average Temperature (Fº)"
           min="-30"
           max="130"
           oninput="this.setCustomValidity(''); this.checkValidity();"

@@ -1,5 +1,5 @@
 // Send the form data to the server using the Fetch API
-fetch('https://localhost:5001/python/app.py', {
+fetch('http://localhost:5000/handle_data', {
     method: 'POST',
     body: formData
 })

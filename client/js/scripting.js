@@ -17,7 +17,7 @@ document
     var formData = new FormData(event.target);
   
     // Send a POST request with the form data
-    fetch('/submit', {
+    fetch('http://localhost:5000/handle_data', {
       method: 'POST',
       body: formData
     })
