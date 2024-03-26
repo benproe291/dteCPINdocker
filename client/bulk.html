@@ -74,7 +74,7 @@
 
     <h2>Bulk Prediction via Upload</h2>
     <p>Upload a CSV file with the following columns:<code> DATE, AVG_TEMP, AVG_DEWPT, AVG_RELHUM, AVG_WSPD, AVG_CLOUDCOVER, STATIONID, WEATHER</code></p>
-  <form id="uploadForm" enctype="multipart/form-data" action="/upload" method="post" >
+  <form id="uploadForm" enctype="multipart/form-data" action="https://localhost:5000/upload" method="post" >
     <input type="file" id="csvFile" name="csvFile" accept=".csv">
     <span><input type="radio" id="industrial" name="type" value="Industrial"><label for="industrial">Industrial</label>
         <input type="radio" id="commercial" name="type" value="Commercial"> <label for="commercial">Commercial</label></span>

@@ -31,5 +31,17 @@ def index():
         return jsonify(prediction=prediction[0], input_data=data)
     return jsonify(message="No data received")
 
+@app.route('/upload', methods=['GET', 'POST'])
+def another_route():
+    if request.method == 'POST':
+        # Handle POST request here
+        return jsonify(message="POST request received at /upload")
+    elif request.method == 'GET':
+        # Handle GET request here
+        return jsonify(message="GET request received at /upload")
+    else:
+        # Handle GET request here
+        return jsonify(message="FALIED to request at /upload")
+
 if __name__ == '__main__':
     app.run(debug=True)
