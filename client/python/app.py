@@ -11,7 +11,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
 
 # Load the model
 
@@ -27,7 +27,7 @@ def index():
         input_data = np.array(list(data.values())).reshape(1, -1)
         # Make a prediction.
         prediction = model.predict(input_data)
-        # Return the result as a JSON response.
+        # Return the result as a JSON response.dump
         return jsonify(prediction=prediction[0], input_data=data)
     return jsonify(message="No data received")
 

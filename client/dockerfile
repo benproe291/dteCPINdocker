@@ -18,3 +18,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Second stage: Nginx
 FROM nginx:alpine
 COPY --from=builder /server /usr/share/nginx/html
+
+EXPOSE 8080
