@@ -114,10 +114,10 @@
     <p>Upload a CSV file with the following
       columns:<code> DATE, AVG_TEMP, AVG_DEWPT, AVG_RELHUM, AVG_WSPD, AVG_CLOUDCOVER, STATIONID, WEATHER</code></p>
     <form id="uploadForm" action="http://localhost:5000/upload" method="POST" enctype="multipart/form-data">
-      <input type="file" id="csvFile" name="csvFile" accept=".csv">
-      <span><input type="radio" id="industrial" name="type" value="IN"><label
+      <input type="file" id="file" name="file.csv" accept=".csv">
+      <span><input type="radio" id="industrial" name="type" value=""><label
           for="industrial">Industrial</label>
-        <input type="radio" id="commercial" name="type" value="CP"> <label
+        <input type="radio" id="commercial" name="type" value=""> <label
           for="commercial">Commercial</label></span>
       <input type="email" id="email" name="email" placeholder="Enter the Recipient Email Address">
       <input type="submit" value="Upload">

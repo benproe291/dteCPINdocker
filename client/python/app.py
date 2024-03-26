@@ -16,6 +16,10 @@ import pandas as pd
 from scipy.stats import ttest_ind
 import matplotlib.dates as mdates
 from matplotlib.ticker import FuncFormatter
+from werkzeug.datastructures import FileStorage
+from PIL import Image
+from io import StringIO
+
 
 app = Flask(__name__)
 # CORS(app)
@@ -41,8 +45,16 @@ def index():
 @app.route('/upload', methods=['GET', 'POST'])
 def another_route():
     if request.method == 'POST':
-        # Handle POST request here
-        data = request.files['csvFile']
+        file = request.files['file.csv']  # This is a FileStorage object
+        # Read the file's contents into a string
+        file_contents = file.read().decode('utf-8')
+        # Use StringIO to convert the string to a file-like object
+        file_like_object = StringIO(file_contents)
+        # Read the file-like object into a pandas DataFrame
+        data = pd.read_csv(file_like_object)
+
+   
+
         #convert 'READING_START_DATE' to datetime
         data['READING_START_DATE'] = pd.to_datetime(data['READING_START_DATE'])
 
@@ -55,9 +67,21 @@ def another_route():
         holidays = cal.holidays(start=data['READING_START_DATE'].min(), end=data['READING_START_DATE'].max())
         #col to indicate if date is a holiday
         data['IS_HOLIDAY'] = data['READING_START_DATE'].isin(holidays).astype(int)
+        cat_data = data[['ADID', 'STATIONID', 'WEATHER', 'IS_HOLIDAY']]
+        le = LabelEncoder()
+        cat_data = cat_data.apply(le.fit_transform)
+        cat_data.head()
+        #concatenate the categorical features with the numerical features
+        num_data = data[['sum(TOTAL_KWH)', 'AVG_TEMP', 'AVG_DEWPT', 'AVG_RELHUM', 'AVG_WSPD', 'AVG_CLOUDCOVER', 'DAY_OF_WEEK', 'MONTH', 'YEAR']]
+
+        data_1 = pd.concat([num_data, cat_data], axis=1)
+
+        data_1.head()
+
+        data2 = data_1.drop(['sum(TOTAL_KWH)', 'ADID', 'DAY_OF_WEEK', 'MONTH', 'YEAR', 'STATIONID'], axis=1) # Drop the target column\
 
         predictions = []
-        for index, row in data.iterrows():
+        for index, row in data2.iterrows():
             # Convert the row to a numpy array and reshape it
             input_data = np.array(row.values).reshape(1, -1)
             # Make a prediction
@@ -69,35 +93,35 @@ def another_route():
         data['prediction'] = predictions
 
         # Save the DataFrame to a new CSV file
-        outputFile = data.to_csv('short/predictions.csv', index=False)
+        outputFile = data.to_csv('predictions.csv', index=False)
 
         #temp vs. energy consumption
         plt.figure(figsize=(10, 6))
-        ax = sns.scatterplot(x='AVG_TEMP', y='sum(TOTAL_KWH)', hue='IsHoliday', data=data)
+        ax = sns.scatterplot(x='AVG_TEMP', y='sum(TOTAL_KWH)', hue='IS_HOLIDAY', data=data)
         plt.title('Temperature vs. Energy Consumption')
         plt.xlabel('Average Temperature (°F)')
         plt.ylabel('Energy Consumption (kWh)')
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('short/tempEnergy.png', dpi=300)
+        plt.savefig('tempEnergy.png', dpi=300)
 
         #plotting energy consumption of holiday vs non-holiday
-        avg_energy_by_holiday = data.groupby('IsHoliday')['sum(TOTAL_KWH)'].mean().reset_index()
+        avg_energy_by_holiday = data.groupby('IS_HOLIDAY')['sum(TOTAL_KWH)'].mean().reset_index()
 
-        #t-test
-        holiday_energy = data[data['IsHoliday']]['sum(TOTAL_KWH)']
-        non_holiday_energy = data[~data['IsHoliday']]['sum(TOTAL_KWH)']
-        t_stat, p_value = ttest_ind(holiday_energy, non_holiday_energy)
+        # #t-test
+        # holiday_energy = data[data['IS_HOLIDAY']]['sum(TOTAL_KWH)']
+        # non_holiday_energy = data[~data['IS_HOLIDAY']]['sum(TOTAL_KWH)']
+        # t_stat, p_value = ttest_ind(holiday_energy, non_holiday_energy)
 
         plt.figure(figsize=(10, 6))
-        ax = sns.barplot(x='IsHoliday', y='sum(TOTAL_KWH)', data=avg_energy_by_holiday)
+        ax = sns.barplot(x='IS_HOLIDAY', y='sum(TOTAL_KWH)', data=avg_energy_by_holiday)
         plt.title('Average Energy Consumption: Holiday vs. Non-Holiday')
         plt.xlabel('Is Holiday')
         plt.ylabel('Average Energy Consumption (kWh)')
         plt.xticks([0, 1], ['Non-Holiday', 'Holiday'])
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('short/avgEnergyHoliday.png', dpi=300)
+        plt.savefig('avgEnergyHoliday.png', dpi=300)
 
         #plotting the energy consumption by temperature category
         bins = [0, 32, 60, 80, 100]
@@ -112,7 +136,7 @@ def another_route():
         plt.ylabel('Energy Consumption (kWh)')
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('short/tempBinsConsumption.png', dpi=300)
+        plt.savefig('tempBinsConsumption.png', dpi=300)
 
         #plotting wind speed vs. energy consumption
         bins = [data['AVG_WSPD'].min(), 5, 15, 25, data['AVG_WSPD'].max()]
@@ -126,14 +150,14 @@ def another_route():
         plt.ylabel('Energy Consumption (kWh)')
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('short/windSpdEnergy.png', dpi=300)
+        plt.savefig('windSpdEnergy.png', dpi=300)
 
         #plot holiday vs. surrounding days vs. regular days
         data['Day_Before_Holiday'] = data['READING_START_DATE'].isin(holidays - pd.Timedelta(days=1))
         data['Day_After_Holiday'] = data['READING_START_DATE'].isin(holidays + pd.Timedelta(days=1))
 
         plt.figure(figsize=(12, 8))
-        data['Period'] = np.where(data['IsHoliday'], 'Holiday', np.where(data['Day_Before_Holiday'], 'Day Before Holiday', np.where(data['Day_After_Holiday'], 'Day After Holiday', 'Regular Day')))
+        data['Period'] = np.where(data['IS_HOLIDAY'], 'Holiday', np.where(data['Day_Before_Holiday'], 'Day Before Holiday', np.where(data['Day_After_Holiday'], 'Day After Holiday', 'Regular Day')))
         ax = sns.boxplot(x='Period', y='sum(TOTAL_KWH)', data=data)
         plt.title('Energy Consumption: Holiday vs. Surrounding Days vs. Regular Days')
         plt.xlabel('Period')
@@ -141,7 +165,7 @@ def another_route():
         plt.xticks(rotation=45)
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('short/holidayDepression.png', dpi=300)
+        plt.savefig('holidayDepression.png', dpi=300)
 
         #energy consumption vs. temperature
         plt.figure(figsize=(12, 6))
@@ -151,9 +175,10 @@ def another_route():
         plt.ylabel('Daily Energy Consumption (kWh)')
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('short/energyTemp.png', dpi=300)
+        plt.savefig('energyTemp.png', dpi=300)
 
-        return jsonify(message=request.form.to_dict()), outputFile
+
+        return jsonify(message="File uploaded successfully")
 
 if __name__ == '__main__':
     app.run(debug=True)
