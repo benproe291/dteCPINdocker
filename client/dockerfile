@@ -6,5 +6,15 @@
 # EXPOSE 3000
 # CMD ["npm", "start"]
 
+# FROM nginx:alpine
+# COPY . /usr/share/nginx/html
+
+# First stage: Python
+FROM python:3.11-slim-buster AS builder
+WORKDIR /server
+COPY . /server
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Second stage: Nginx
 FROM nginx:alpine
-COPY . /usr/share/nginx/html
+COPY --from=builder /server /usr/share/nginx/html
