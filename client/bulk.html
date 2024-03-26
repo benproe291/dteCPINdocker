@@ -1,90 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>SE Michigan Weather Prediction</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="dtestyle.css" />
-    <script src="js/scripting.js"></script>
-    <script>
-        function validateForm() {
-            const date1 = new Date(document.getElementById('date1').value);
-            const date2 = new Date(document.getElementById('date2').value);
 
-            if (date2 <= date1) {
-                alert('The second date must be at least one day after the first date.');
-                return false;
-            }
+<head>
+  <meta charset="UTF-8" />
+  <title>SE Michigan Weather Prediction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="dtestyle.css" />
+  <script src="js/scripting.js"></script>
+  <script>
+    function validateForm() {
+      const date1 = new Date(document.getElementById('date1').value);
+      const date2 = new Date(document.getElementById('date2').value);
 
-            return true;
-        }
-    </script>
-  </head>
-  <body>
-    <div class="header-desktop">
-      <div class="text-center">
-        <svg
-          class="nav_home_img"
-          fill="none"
-          height="32"
-          viewBox="0 0 94 32"
-          width="94"
-        >
-          <path
-            d="M62.3844 7.78728H53.4123V32H41.7655V7.78728H32.7755V0.0179513H62.3844V7.78728ZM93.2247 7.66162V0H66.8219V24.3133C66.8219 28.5103 70.2255 31.9102 74.4189 31.9102H79.3627H93.3611V24.2127H79.8079C78.8278 24.2127 78.0307 23.4157 78.0307 22.4355V19.2761H92.6144V12.1853H78.0307V7.66162H93.2247ZM19.7177 31.9749H0V0.0502637H19.6531C24.8482 0.0502637 29.056 4.26164 29.056 9.45316V22.6366C29.056 27.7922 24.8769 31.9749 19.7177 31.9749ZM18.2888 21.8826V10.0061C18.2888 8.65253 17.1902 7.5575 15.8402 7.5575H11.5283V24.3312H15.8402C17.1902 24.3312 18.2888 23.2362 18.2888 21.8826Z"
-            fill="white"
-          ></path>
-        </svg>
-      </div>
+      if (date2 <= date1) {
+        alert('The second date must be at least one day after the first date.');
+        return false;
+      }
+
+      return true;
+    }
+  </script>
+  <script>
+    function validateForm() {
+      // ... your existing validation logic ...
+
+      // Prevent the form from submitting normally
+      event.preventDefault();
+
+      // Get form data
+      const type = document.querySelector('input[name="type"]:checked').value;
+      const date1 = document.getElementById('date1').value;
+      const date2 = document.getElementById('date2').value;
+      const email = document.getElementById('email').value;
+
+      // Create a new FormData object
+      const formData = new FormData();
+      formData.append('file', document.getElementById('csvFile').files);
+      formData.append('type', type);
+      formData.append('date1', date1);
+      formData.append('date2', date2);
+      formData.append('email', email);
+
+      // Make a POST request to the /handle_data endpoint
+      fetch('http://localhost:5000/handle_data', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Handle the response data here
+          console.log(data);
+        })
+        .catch(error => {
+          // Handle the error here
+          console.error('Error:', error);
+        });
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script>
+</head>
+
+<body>
+  <div class="header-desktop">
+    <div class="text-center">
+      <svg class="nav_home_img" fill="none" height="32" viewBox="0 0 94 32" width="94">
+        <path
+          d="M62.3844 7.78728H53.4123V32H41.7655V7.78728H32.7755V0.0179513H62.3844V7.78728ZM93.2247 7.66162V0H66.8219V24.3133C66.8219 28.5103 70.2255 31.9102 74.4189 31.9102H79.3627H93.3611V24.2127H79.8079C78.8278 24.2127 78.0307 23.4157 78.0307 22.4355V19.2761H92.6144V12.1853H78.0307V7.66162H93.2247ZM19.7177 31.9749H0V0.0502637H19.6531C24.8482 0.0502637 29.056 4.26164 29.056 9.45316V22.6366C29.056 27.7922 24.8769 31.9749 19.7177 31.9749ZM18.2888 21.8826V10.0061C18.2888 8.65253 17.1902 7.5575 15.8402 7.5575H11.5283V24.3312H15.8402C17.1902 24.3312 18.2888 23.2362 18.2888 21.8826Z"
+          fill="white"></path>
+      </svg>
     </div>
-      <div class="navbar">
-        <a href="index.html">Home</a>
-        <a href="bulk.html">Bulk Upload</a>
-      </div>
-    
+  </div>
+  <div class="navbar">
+    <a href="index.html">Home</a>
+    <a href="bulk.html">Bulk Upload</a>
+  </div>
 
-    <div class="form-card">
-      <h1>Bulk Energy Usage Forcas   ting</h1>
-      <p>Use this form to select the type of prediction that is being made then enter the dates for which you want a prediction to be generated.</p>
-      <p>Using this option with send a call to the NOAA API to retrive relevant forecast or recorded temperature data. Data is from the DTW weather station.</p>
-      <form onsubmit="return validateForm()">
-        
-       <span><input type="radio" id="industrial" name="type" value="Industrial"><label for="industrial">Industrial</label>
-        <input type="radio" id="commercial" name="type" value="Commercial"> <label for="commercial">Commercial</label></span>
-      
-        <input type="date" id="date1" name="date1"><br>
-        <input type="date" id="date2" name="date2"><br>
 
-        <input type="email" id="email" name="email" placeholder="Enter the Recipient Email Address">
-      
-        <input type="submit" value="Submit">
-      </form>
-      
-    </div>
+  <div class="form-card">
+    <h1>Bulk Energy Usage Forcas ting</h1>
+    <p>Use this form to select the type of prediction that is being made then enter the dates for which you want a
+      prediction to be generated.</p>
+    <p>Using this option with send a call to the NOAA API to retrive relevant forecast or recorded temperature data.
+      Data is from the DTW weather station.</p>
+    <form onsubmit="return validateForm()">
 
-    <div class="resp-card">
+      <span><input type="radio" id="industrial" name="type" value="Industrial"><label
+          for="industrial">Industrial</label>
+        <input type="radio" id="commercial" name="type" value="Commercial"> <label
+          for="commercial">Commercial</label></span>
 
-      </a>
-    <p id="prediction">Bulk Prediction Results will be displayed here in some time. Results will be emailed to {recipient}@dte.com</p>
-      <div id="result"></div>
-      <script src="webpage/js/restrq.js"></script>
+      <input type="date" id="date1" name="date1"><br>
+      <input type="date" id="date2" name="date2"><br>
 
-    </div>
-    <div class="resp-card">
+      <input type="email" id="email" name="email" placeholder="Enter the Recipient Email Address">
+
+      <input type="submit" value="Submit">
+    </form>
+
+  </div>
+
+  <div class="resp-card">
+
+    </a>
+    <p id="prediction">Bulk Prediction Results will be displayed here in some time. Results will be emailed to
+      {recipient}@dte.com</p>
+    <div id="result"></div>
+    <script src="webpage/js/restrq.js"></script>
+
+  </div>
+  <div class="resp-card">
 
     <h2>Bulk Prediction via Upload</h2>
-    <p>Upload a CSV file with the following columns:<code> DATE, AVG_TEMP, AVG_DEWPT, AVG_RELHUM, AVG_WSPD, AVG_CLOUDCOVER, STATIONID, WEATHER</code></p>
-  <form id="uploadForm" enctype="multipart/form-data" action="https://localhost:5000/upload" method="post" >
-    <input type="file" id="csvFile" name="csvFile" accept=".csv">
-    <span><input type="radio" id="industrial" name="type" value="Industrial"><label for="industrial">Industrial</label>
-        <input type="radio" id="commercial" name="type" value="Commercial"> <label for="commercial">Commercial</label></span>
-    <input type="email" id="email" name="email" placeholder="Enter the Recipient Email Address">
-    <input type="submit" value="Submit">
-  </form>
-</div>
-<div class="resp-card">
-  <p id="prediction">Bulk Prediction Results will be displayed here in some time. Results will be emailed to <span id="emailPlaceholder"></span></p>
-  <div id="result"></div>
-  <script src="webpage/js/restrq.js"></script>
-</body> 
+    <p>Upload a CSV file with the following
+      columns:<code> DATE, AVG_TEMP, AVG_DEWPT, AVG_RELHUM, AVG_WSPD, AVG_CLOUDCOVER, STATIONID, WEATHER</code></p>
+    <form id="uploadForm" action="http://localhost:5000/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" id="csvFile" name="csvFile" accept=".csv">
+      <span><input type="radio" id="industrial" name="type" value="IN"><label
+          for="industrial">Industrial</label>
+        <input type="radio" id="commercial" name="type" value="CP"> <label
+          for="commercial">Commercial</label></span>
+      <input type="email" id="email" name="email" placeholder="Enter the Recipient Email Address">
+      <input type="submit" value="Upload">
+    </form>
+  </div>
+  <div class="resp-card">
+    <p id="prediction">Bulk Prediction Results will be displayed here in some time. Results will be emailed to <span
+        id="emailPlaceholder"></span></p>
+    <div id="result"></div>
+    <script src="webpage/js/restrq.js"></script>
+</body>
+
 </html>
