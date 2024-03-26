@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import pickle
 import numpy as np
 import pickle
@@ -27,9 +27,9 @@ def index():
         input_data = np.array(list(data.values())).reshape(1, -1)
         # Make a prediction.
         prediction = model.predict(input_data)
-        # Return the result.
-        return render_template('index.html', prediction=prediction[0], input_data=data)
-    return render_template('index.html')
+        # Return the result as a JSON response.
+        return jsonify(prediction=prediction[0], input_data=data)
+    return jsonify(message="No data received")
 
 if __name__ == '__main__':
     app.run(debug=True)

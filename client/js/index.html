@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SE Michigan Weather Prediction</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="dtestyle.css" />
+    <script src="js/restrq.js"></script>
+    <script src="js/scripting.js"></script>
+    <script>fetch('/handle_data', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          // Your input data here
+      })
+  })
+  .then(response => response.json())
+  .then(data => {
+      // Handle the data here
+      document.getElementById('prediction').textContent = "Prediction: " + data.prediction;
+      document.getElementById('result').textContent = "Input data: " + JSON.stringify(data.input_data);
+  })
+  .catch((error) => {
+      console.error('Error:', error);
+  });</script>
+  </head>
+  <body>
+    <div class="header-desktop">
+      <div class="text-center">
+        <svg
+          class="nav_home_img"
+          fill="none"
+          height="32"
+          viewBox="0 0 94 32"
+          width="94"
+        >
+          <path
+            d="M62.3844 7.78728H53.4123V32H41.7655V7.78728H32.7755V0.0179513H62.3844V7.78728ZM93.2247 7.66162V0H66.8219V24.3133C66.8219 28.5103 70.2255 31.9102 74.4189 31.9102H79.3627H93.3611V24.2127H79.8079C78.8278 24.2127 78.0307 23.4157 78.0307 22.4355V19.2761H92.6144V12.1853H78.0307V7.66162H93.2247ZM19.7177 31.9749H0V0.0502637H19.6531C24.8482 0.0502637 29.056 4.26164 29.056 9.45316V22.6366C29.056 27.7922 24.8769 31.9749 19.7177 31.9749ZM18.2888 21.8826V10.0061C18.2888 8.65253 17.1902 7.5575 15.8402 7.5575H11.5283V24.3312H15.8402C17.1902 24.3312 18.2888 23.2362 18.2888 21.8826Z"
+            fill="white"
+          ></path>
+        </svg>
+      </div>
+    </div>
+      <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="bulk.html">Bulk Upload</a>
+      </div>
+
+    <div class="form-card">
+      <h1>Energy Usage Forcasting</h1>
+      <p>Enter the following information to predict the weather:</p>
+      <form method="post" id="hyperparameters" action="/handle_data">
+        <input type="date" name="READING_START_DATE" placeholder="Date" />
+        <div class="radio-buttons">
+          <input type="radio" id="IN" name="ADID" value="IN" />
+          <label for="IN">Industrial</label><br />
+          <input type="radio" id="CP" name="ADID" value="CP" />
+          <label for="CP">Commercial</label><br />
+        </div>
+        <input
+          type="number"
+          name="AVG_TEMP"
+          placeholder="Average Temperature (Fº)"
+          min="-30"
+          max="130"
+          oninput="this.setCustomValidity(''); this.checkValidity();"
+        />
+        <input
+          type="number"
+          name="AVG_DEWPT"
+          placeholder="Average Dew Point (F º)"
+          min="0"
+          max="150"
+          oninput="this.setCustomValidity(''); this.checkValidity();"
+        />
+        <input
+        type="number"
+        name="AVG_RELHUM"
+        placeholder="Average Relative Humidity (% represented as 0-100)"
+        min="0"
+        max="100"
+        oninput="this.setCustomValidity(''); this.checkValidity();"
+      />
+      <input
+      type="number"
+      name="AVG_CLOUDCOVER"
+      placeholder="Average Cloud Cover (0-100)"
+      min="0"
+      max="100"
+      oninput="this.setCustomValidity(''); this.checkValidity();"
+    />
+    <input
+    type="number"
+    name="AVG_WSPD"
+    placeholder="Average Wind Speed (MPH)"
+    min="0"
+    max="100"
+    oninput="this.setCustomValidity(''); this.checkValidity();"
+  />
+        <div class="buttons">
+          <input type="reset" value="Reset" />
+          <input type="submit" value="Submit" />
+        </div>
+      </form>
+      <p id="confirmation"></p>
+    </div>
+
+    <div class="resp-card">
+
+      </a>
+      <p id="prediction">Prediction will be displayed here.</p>
+      <p id="result">{{ prediction }} kW-h</p>
+
+
+
+
+</div>
+  </body>
+</html>
