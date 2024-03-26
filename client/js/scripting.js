@@ -37,3 +37,30 @@ document
       console.error(error);
     });
   });
+
+  const fs = require('fs');
+  const Papa = require('papaparse');
+  
+  fs.readFile('../predictions.csv', 'utf8', function(err, data) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    
+    Papa.parse(data, {
+      complete: function(results) {
+        let data = results.data;
+        let table = document.createElement('table');
+        data.forEach(function(row) {
+          let tr = document.createElement('tr');
+          row.forEach(function(col) {
+            let td = document.createElement('td');
+            td.textContent = col;
+            tr.appendChild(td);
+          });
+          table.appendChild(tr);
+        });
+        document.body.appendChild(table);
+      }
+    });
+  });
