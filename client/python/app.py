@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, redirect, request, render_template, jsonify, url_for
 import pickle
 import numpy as np
 import pickle
@@ -6,6 +6,7 @@ import joblib
 import os
 import matplotlib.pyplot as plt
 from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
+from pyparsing import html_comment
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
@@ -19,9 +20,10 @@ from matplotlib.ticker import FuncFormatter
 from werkzeug.datastructures import FileStorage
 from PIL import Image
 from io import StringIO
+import csv
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 # CORS(app)
 
 # Load the model
@@ -39,7 +41,7 @@ def index():
         # Make a prediction.
         prediction = model.predict(input_data)
         # Return the result as a JSON response.dump
-        return jsonify(prediction=prediction[0], input_data=data)
+        return render_template('results.html', prediction=prediction[0], input_data=data)    
     return jsonify(message="No data received")
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -138,8 +140,9 @@ def another_route():
         ax.yaxis.set_major_formatter(y_formatter)
         plt.savefig('tempBinsConsumption.png', dpi=300)
 
-        #plotting wind speed vs. energy consumption
-        bins = [data['AVG_WSPD'].min(), 5, 15, 25, data['AVG_WSPD'].max()]
+        min_val = min(5, data['AVG_WSPD'].min())
+        max_val = max(25, data['AVG_WSPD'].max())
+        bins = [min_val, 5, 15, 25, max_val]
         labels = ['Calm', 'Breezy', 'Windy', 'Very Windy']
         data['Wind_Category'] = pd.cut(data['AVG_WSPD'], bins=bins, labels=labels)
 
@@ -176,9 +179,8 @@ def another_route():
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
         plt.savefig('energyTemp.png', dpi=300)
-
-
-        return jsonify(message="File uploaded successfully")
+    
+    return  redirect('http://localhost:80/python/results.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

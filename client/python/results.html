@@ -1,40 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SE Michigan Weather Prediction</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../dtestyle.css" />
+    <script src="../js/scripting.js"></script>
+    <style>
+      .grid-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* This will divide the grid into two equal columns */
+        width: 100%; /* This will make the grid take up 80% of the screen width */
+        margin: 0 auto; /* This will center the grid horizontally */
+        padding: 10px;
+      }
+      .grid-item {
+        padding: 10px;
+        text-align: center;
+      }
+      .grid-item img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain; /* This will make the image scale while maintaining its aspect ratio */
+      }
+    </style>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>SE Michigan Weather Prediction</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../dtestyle.css" />
-  <script src="../js/scripting.js"></script>
-
-</head>
-
-<body>
-  <div class="header-desktop">
-    <div class="text-center">
-      <svg class="nav_home_img" fill="none" height="32" viewBox="0 0 94 32" width="94">
-        <path
-          d="M62.3844 7.78728H53.4123V32H41.7655V7.78728H32.7755V0.0179513H62.3844V7.78728ZM93.2247 7.66162V0H66.8219V24.3133C66.8219 28.5103 70.2255 31.9102 74.4189 31.9102H79.3627H93.3611V24.2127H79.8079C78.8278 24.2127 78.0307 23.4157 78.0307 22.4355V19.2761H92.6144V12.1853H78.0307V7.66162H93.2247ZM19.7177 31.9749H0V0.0502637H19.6531C24.8482 0.0502637 29.056 4.26164 29.056 9.45316V22.6366C29.056 27.7922 24.8769 31.9749 19.7177 31.9749ZM18.2888 21.8826V10.0061C18.2888 8.65253 17.1902 7.5575 15.8402 7.5575H11.5283V24.3312H15.8402C17.1902 24.3312 18.2888 23.2362 18.2888 21.8826Z"
-          fill="white"></path>
-      </svg>
+  <body>
+    <div class="header-desktop">
+      <div class="text-center">
+        <svg
+          class="nav_home_img"
+          fill="none"
+          height="32"
+          viewBox="0 0 94 32"
+          width="94"
+        >
+          <path
+            d="M62.3844 7.78728H53.4123V32H41.7655V7.78728H32.7755V0.0179513H62.3844V7.78728ZM93.2247 7.66162V0H66.8219V24.3133C66.8219 28.5103 70.2255 31.9102 74.4189 31.9102H79.3627H93.3611V24.2127H79.8079C78.8278 24.2127 78.0307 23.4157 78.0307 22.4355V19.2761H92.6144V12.1853H78.0307V7.66162H93.2247ZM19.7177 31.9749H0V0.0502637H19.6531C24.8482 0.0502637 29.056 4.26164 29.056 9.45316V22.6366C29.056 27.7922 24.8769 31.9749 19.7177 31.9749ZM18.2888 21.8826V10.0061C18.2888 8.65253 17.1902 7.5575 15.8402 7.5575H11.5283V24.3312H15.8402C17.1902 24.3312 18.2888 23.2362 18.2888 21.8826Z"
+            fill="white"
+          ></path>
+        </svg>
+      </div>
     </div>
-  </div>
-  <div class="navbar">
-    <a href="index.html">Home</a>
-    <a href="bulk.html">|          Bulk Upload</a>
-  </div>
-
-
-  <div class="form-card">
-    <h1>Energy Usage Forcasting Results from CSV Submission</h1>
-    <div id="results">
-
+    <div class="navbar">
+      <a href="index.html">Home</a>
+      <a href="bulk.html">| Bulk Upload</a>
     </div>
-    </form>
 
-  </div>
-
-</body>
-
+    <div class="form-card">
+      <h1>Energy Usage Forcasting Results from CSV Submission</h1>
+      <div>
+        <a href="predictions.csv" download>
+          <button>Download Results Table</button>
+        </a>
+      </div>
+      <div class="grid-container">
+        <div class="grid-item">
+          <img src="tempEnergy.png" alt="Placeholder Image" />
+        </div>
+        <div class="grid-item">
+          <img src="energyTemp.png" alt="Placeholder Image" />
+        </div>
+        <div class="grid-item">
+          <img src="avgEnergyHoliday.png" alt="Placeholder Image" />
+        </div>
+        <div class="grid-item">
+          <img src="holidayDepression.png" alt="Placeholder Image" />
+        </div>
+        <div class="grid-item">
+          <img src="tempBinsConsumption.png" alt="Placeholder Image" />
+        </div>
+        <div class="grid-item">
+          <img src="windSpdEnergy.png" alt="Placeholder Image" />
+        </div>
+      </div>
+      <a href="../bulk.html" download>
+        <button>Make another prediction</button>
+      </a>
+    </div>
+  </body>
 </html>

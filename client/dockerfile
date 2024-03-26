@@ -13,7 +13,7 @@
 FROM python:3.11-slim-buster AS builder
 WORKDIR /server
 COPY . /server
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Second stage: Nginx
 FROM nginx:alpine
