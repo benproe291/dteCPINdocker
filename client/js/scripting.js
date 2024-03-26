@@ -60,7 +60,8 @@ document
           });
           table.appendChild(tr);
         });
-        document.body.appendChild(table);
+        let container = document.getElementById('results');
+        container.appendChild(table);
       }
     });
   });
