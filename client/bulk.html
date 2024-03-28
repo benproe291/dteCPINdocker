@@ -82,11 +82,11 @@
       prediction to be generated.</p>
     <p>Using this option with send a call to the NOAA API to retrive relevant forecast or recorded temperature data.
       Data is from the DTW weather station.</p>
-    <form onsubmit="return validateForm()">
+    <form id="apiForm" action="http://localhost:5000/api" method="POST" enctype="multipart/form-data">
 
-      <span><input type="radio" id="industrial" name="type" value="Industrial"><label
+      <span><input type="radio" id="industrial" name="type" value="IN"><label
           for="industrial">Industrial</label>
-        <input type="radio" id="commercial" name="type" value="Commercial"> <label
+        <input type="radio" id="commercial" name="type" value="CP"> <label
           for="commercial">Commercial</label></span>
 
       <input type="date" id="date1" name="date1"><br>

@@ -1,11 +1,13 @@
-from flask import Flask, redirect, request, render_template, jsonify, url_for
+from flask import Flask, redirect, request, render_template, jsonify
 import pickle
+from markupsafe import escape
 import numpy as np
 import pickle
 import joblib
 import os
 import matplotlib.pyplot as plt
 from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
+from polars import date
 from pyparsing import html_comment
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
@@ -21,6 +23,7 @@ from werkzeug.datastructures import FileStorage
 from PIL import Image
 from io import StringIO
 import csv
+import requests
 
 
 app = Flask(__name__, template_folder='templates')
@@ -181,6 +184,34 @@ def another_route():
         plt.savefig('./client/python/temp/energyTemp.png', dpi=300)
     
     return  redirect('http://localhost:80/python/results.html')
+
+@app.route('/api', methods=['GET', 'POST'])
+def apiCall():
+    if request.method == 'POST':
+        date1 = request.form['date1']
+        date2 = request.form['date2']
+        type = request.form['type']
+        def get_weather(request=request):
+            request_json = request.get_json(silent=True)
+            request_args = request.args
+
+            if request_json and 'date1' in request_json and 'date2' in request_json:
+                date1 = escape(request_json['date1'])
+                date2 = escape(request_json['date2'])
+            elif request_args and 'date1' in request_args and 'date2' in request_args:
+                date1 = escape(request_args['date1'])
+                date2 = escape(request_args['date2'])
+            else:
+                return 'Missing dates'
+    
+        latitude = "42.3314"
+        longitude = "-83.0458"
+        response = requests.get(f'https://api.weather.gov/points/{latitude},{longitude}/observations?start={date1}&end={date2}')
+
+
+        return jsonify(response.json()) 
+    get_weather()   
+    return jsonify(message="No data received")
 
 if __name__ == '__main__':
     app.run(debug=True)
