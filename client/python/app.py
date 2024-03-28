@@ -95,7 +95,7 @@ def another_route():
         data['prediction'] = predictions
 
         # Save the DataFrame to a new CSV file
-        outputFile = data.to_csv('predictions.csv', index=False)
+        outputFile = data.to_csv('./client/python/temp/predictions.csv', index=False)
 
         #temp vs. energy consumption
         plt.figure(figsize=(10, 6))
@@ -105,7 +105,7 @@ def another_route():
         plt.ylabel('Energy Consumption (kWh)')
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('tempEnergy.png', dpi=300)
+        plt.savefig('./client/python/temp/tempEnergy.png', dpi=300)
 
         #plotting energy consumption of holiday vs non-holiday
         avg_energy_by_holiday = data.groupby('IS_HOLIDAY')['sum(TOTAL_KWH)'].mean().reset_index()
@@ -123,7 +123,7 @@ def another_route():
         plt.xticks([0, 1], ['Non-Holiday', 'Holiday'])
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('avgEnergyHoliday.png', dpi=300)
+        plt.savefig('./client/python/temp/avgEnergyHoliday.png', dpi=300)
 
         #plotting the energy consumption by temperature category
         bins = [0, 32, 60, 80, 100]
@@ -138,7 +138,7 @@ def another_route():
         plt.ylabel('Energy Consumption (kWh)')
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('tempBinsConsumption.png', dpi=300)
+        plt.savefig('./client/python/temp/tempBinsConsumption.png', dpi=300)
 
         min_val = min(5, data['AVG_WSPD'].min())
         max_val = max(25, data['AVG_WSPD'].max())
@@ -153,7 +153,7 @@ def another_route():
         plt.ylabel('Energy Consumption (kWh)')
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('windSpdEnergy.png', dpi=300)
+        plt.savefig('./client/python/temp/windSpdEnergy.png', dpi=300)
 
         #plot holiday vs. surrounding days vs. regular days
         data['Day_Before_Holiday'] = data['READING_START_DATE'].isin(holidays - pd.Timedelta(days=1))
@@ -168,7 +168,7 @@ def another_route():
         plt.xticks(rotation=45)
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('holidayDepression.png', dpi=300)
+        plt.savefig('./client/python/temp/holidayDepression.png', dpi=300)
 
         #energy consumption vs. temperature
         plt.figure(figsize=(12, 6))
@@ -178,7 +178,7 @@ def another_route():
         plt.ylabel('Daily Energy Consumption (kWh)')
         y_formatter = FuncFormatter(lambda x, p: format(int(x), ','))
         ax.yaxis.set_major_formatter(y_formatter)
-        plt.savefig('energyTemp.png', dpi=300)
+        plt.savefig('./client/python/temp/energyTemp.png', dpi=300)
     
     return  redirect('http://localhost:80/python/results.html')
 
