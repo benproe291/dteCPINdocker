@@ -209,7 +209,7 @@ def apiCall():
         response = requests.get(f'https://api.weather.gov/points/{latitude},{longitude}/observations?start={date1}&end={date2}')
 
 
-        return jsonify(response.json()) 
+        return jsonify(date1=date1, date2=date2, type=type, response=response.json())
     get_weather()   
     return jsonify(message="No data received")
 
