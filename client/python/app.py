@@ -1,5 +1,4 @@
 from flask import Flask, redirect, request, render_template, jsonify
-import pickle
 from markupsafe import escape
 import numpy as np
 import pickle
@@ -11,7 +10,6 @@ from pyparsing import html_comment
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from flask_cors import CORS
 from datetime import timedelta
 import seaborn as sns
 import pandas as pd
