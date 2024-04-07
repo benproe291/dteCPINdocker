@@ -164,7 +164,8 @@ def another_route():
 
         plt.figure(figsize=(12, 8))
         data['Period'] = np.where(data['IS_HOLIDAY'], 'Holiday', np.where(data['Day_Before_Holiday'], 'Day Before Holiday', np.where(data['Day_After_Holiday'], 'Day After Holiday', 'Regular Day')))
-        ax = sns.boxplot(x='Period', y='sum(TOTAL_KWH)', data=data)
+        data['Type'] = np.where(data['Period'] == 'Regular Day', 'Control', 'Test')
+        ax = sns.boxplot(x='Period', y='sum(TOTAL_KWH)', hue='Type', data=data, order=['Regular Day', 'Day Before Holiday', 'Holiday', 'Day After Holiday'])
         plt.title('Energy Consumption: Holiday vs. Surrounding Days vs. Regular Days')
         plt.xlabel('Period')
         plt.ylabel('Energy Consumption (kWh)')
