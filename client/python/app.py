@@ -1,5 +1,4 @@
 from flask import Flask, redirect, request, render_template, jsonify
-import pickle
 from markupsafe import escape
 import numpy as np
 import pickle
@@ -7,12 +6,10 @@ import joblib
 import os
 import matplotlib.pyplot as plt
 from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
-from polars import date
 from pyparsing import html_comment
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from flask_cors import CORS
 from datetime import timedelta
 import seaborn as sns
 import pandas as pd
@@ -191,19 +188,6 @@ def apiCall():
     if request.method == 'POST':
         date1 = request.form['date1']
         date2 = request.form['date2']
-        type = request.form['type']
-        def get_weather(request=request):
-            request_json = request.get_json(silent=True)
-            request_args = request.args
-
-            if request_json and 'date1' in request_json and 'date2' in request_json:
-                date1 = escape(request_json['date1'])
-                date2 = escape(request_json['date2'])
-            elif request_args and 'date1' in request_args and 'date2' in request_args:
-                date1 = escape(request_args['date1'])
-                date2 = escape(request_args['date2'])
-            else:
-                return 'Missing dates'
     
         latitude = "42.3314"
         longitude = "-83.0458"
@@ -211,7 +195,7 @@ def apiCall():
 
 
         return jsonify(date1=date1, date2=date2, type=type, response=response.json())
-    get_weather()   
+       
     return jsonify(message="No data received")
 
 if __name__ == '__main__':
