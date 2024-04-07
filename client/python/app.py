@@ -59,7 +59,7 @@ def another_route():
    
 
         #convert 'READING_START_DATE' to datetime
-        data['READING_START_DATE'] = pd.to_datetime(data['READING_START_DATE'])
+        data['READING_START_DATE'] = pd.to_datetime(data['READING_START_DATE'], format="%d/%m/%Y")
 
         #extract year, month, day, and day of week
         data['DAY_OF_WEEK'] = data['READING_START_DATE'].dt.dayofweek
@@ -70,6 +70,8 @@ def another_route():
         holidays = cal.holidays(start=data['READING_START_DATE'].min(), end=data['READING_START_DATE'].max())
         #col to indicate if date is a holiday
         data['IS_HOLIDAY'] = data['READING_START_DATE'].isin(holidays).astype(int)
+        data = data.dropna()
+
         cat_data = data[['ADID', 'STATIONID', 'WEATHER', 'IS_HOLIDAY']]
         le = LabelEncoder()
         cat_data = cat_data.apply(le.fit_transform)
@@ -98,9 +100,12 @@ def another_route():
         # Save the DataFrame to a new CSV file
         outputFile = data.to_csv('./client/python/temp/predictions.csv', index=False)
 
-        #temp vs. energy consumption
+        # Map 1 to True and 0 to False
+        data['IS_HOLIDAY_BOOL'] = data['IS_HOLIDAY'].map({1: True, 0: False})
+
+        # temp vs. energy consumption
         plt.figure(figsize=(10, 6))
-        ax = sns.scatterplot(x='AVG_TEMP', y='sum(TOTAL_KWH)', hue='IS_HOLIDAY', data=data)
+        ax = sns.scatterplot(x='AVG_TEMP', y='sum(TOTAL_KWH)', hue='IS_HOLIDAY_BOOL', data=data)
         plt.title('Temperature vs. Energy Consumption')
         plt.xlabel('Average Temperature (°F)')
         plt.ylabel('Energy Consumption (kWh)')
@@ -143,9 +148,13 @@ def another_route():
 
         min_val = min(5, data['AVG_WSPD'].min())
         max_val = max(25, data['AVG_WSPD'].max())
-        bins = [min_val, 5, 15, 25, max_val]
-        labels = ['Calm', 'Breezy', 'Windy', 'Very Windy']
-        data['Wind_Category'] = pd.cut(data['AVG_WSPD'], bins=bins, labels=labels)
+
+        # Create 5 evenly spaced bins
+        bins = np.linspace(min_val, max_val, 6)
+
+        # Create labels from bin edges
+        labels = [f'{round(bins[i], 1)} to {round(bins[i+1], 1)}' for i in range(len(bins)-1)]
+        data['Wind_Category'] = pd.cut(data['AVG_WSPD'], bins=bins, labels=labels, include_lowest=True)
 
         plt.figure(figsize=(10, 6))
         ax = sns.boxplot(x='Wind_Category', y='sum(TOTAL_KWH)', data=data)
@@ -196,12 +205,12 @@ def apiCall():
         part = ['current', 'minutely', 'hourly', 'alerts']
         measure = "imperial"
         date = date1
-        response = requests.get(f'https://api.openweathermap.org/data/3.0/onecall/day_summary?lat={lat}&lon={lon}&date={date}&appid={key}')
+        response = requests.get(f'https://api.openweathermap.org/data/3.0/onecall/day_summary?lat={lat}&lon={lon}&date={date}&units={measure}&appid={key}')
 
         response_df = pd.json_normalize(response.json())
 
 
-        return response
+        return response.json()
        
     return jsonify(message="No data received")
 
