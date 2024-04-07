@@ -6,6 +6,7 @@ import joblib
 import os
 import matplotlib.pyplot as plt
 from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
+from polars import date
 from pyparsing import html_comment
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
@@ -189,12 +190,18 @@ def apiCall():
         date1 = request.form['date1']
         date2 = request.form['date2']
     
-        latitude = "42.3314"
-        longitude = "-83.0458"
-        response = requests.get(f'https://api.weather.gov/points/{latitude},{longitude}/observations?start={date1}&end={date2}')
+        lat = "42.3314"
+        lon = "-83.0458"
+        key = "bdf831299449c44236bc12d4c5c30d63"
+        part = ['current', 'minutely', 'hourly', 'alerts']
+        measure = "imperial"
+        date = date1
+        response = requests.get(f'https://api.openweathermap.org/data/3.0/onecall/day_summary?lat={lat}&lon={lon}&date={date}&appid={key}')
+
+        response_df = pd.json_normalize(response.json())
 
 
-        return jsonify(date1=date1, date2=date2, type=type, response=response.json())
+        return response
        
     return jsonify(message="No data received")
 
