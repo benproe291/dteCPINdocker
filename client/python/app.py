@@ -21,8 +21,9 @@ from werkzeug.datastructures import FileStorage
 from PIL import Image
 from io import StringIO
 import csv
+import time
 import requests
-
+from datetime import datetime
 
 app = Flask(__name__, template_folder='templates')
 # CORS(app)
@@ -37,12 +38,23 @@ def index():
     if request.method == 'POST':
         # Get the data from the POST request.
         data = request.form.to_dict()
+
+        # Convert the date string to a datetime object.
+        date = datetime.strptime(data['Date'], '%Y-%m-%d')  # replace 'date' with the actual key for the date
+
+        # Convert the datetime object to a timestamp (float).
+        timestamp = date.timestamp()
+
+        # Replace the date string in the data with the timestamp.
+        data['date'] = timestamp
+
         # Convert the dictionary to a numpy array.
         input_data = np.array(list(data.values())).reshape(1, -1)
+
         # Make a prediction.
         prediction = model.predict(input_data)
         # Return the result as a JSON response.dump
-        return render_template('results.html', prediction=prediction[0], input_data=data)    
+        return jsonify(prediction=prediction[0].tolist(), input_data=data)
     return jsonify(message="No data received")
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -191,28 +203,19 @@ def another_route():
         ax.yaxis.set_major_formatter(y_formatter)
         plt.savefig('./client/python/temp/energyTemp.png', dpi=300)
     
-    return  redirect('http://localhost:80/python/results.html')
+    return  redirect('http://127.0.0.1:5500/client/python/results.html')
+
 
 @app.route('/api', methods=['GET', 'POST'])
 def apiCall():
     if request.method == 'POST':
-        date1 = request.form['date1']
-        date2 = request.form['date2']
-    
-        lat = "42.3314"
-        lon = "-83.0458"
-        key = "bdf831299449c44236bc12d4c5c30d63"
-        part = ['current', 'minutely', 'hourly', 'alerts']
-        measure = "imperial"
-        date = date1
-        response = requests.get(f'https://api.openweathermap.org/data/3.0/onecall/day_summary?lat={lat}&lon={lon}&date={date}&units={measure}&appid={key}')
+        # Get the data from the POST request.
+        data = request.form.to_dict()
 
-        response_df = pd.json_normalize(response.json())
+        time.sleep(10)
 
-
-        return response.json()
-       
-    return jsonify(message="No data received")
+        
+    return  redirect('http://127.0.0.1:5500/client/python/results.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

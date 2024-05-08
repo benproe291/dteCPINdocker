@@ -8,6 +8,7 @@
     <script src="js/restrq.js"></script>
     <script src="js/scripting.js"></script>
     
+    
   </head>
   <body>
     <div class="header-desktop">
@@ -89,6 +90,34 @@
       </form>
       <p id="confirmation"></p>
     </div>
+    <p id="prediction"></p>
 
+
+    <script>
+      document.getElementById('hyperparameters').addEventListener('submit', function(event) {
+          event.preventDefault();
+      
+          var formData = new FormData(this);
+      
+          fetch('http://localhost:5000/handle_data', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => response.json()) // Parse the JSON response
+          .then(data => {
+              // Update the page based on the server's response
+              document.querySelector('#prediction').textContent = data.prediction;
+      
+              // Display the prediction as an in-browser notification
+              alert('Prediction: ' + data.prediction);
+          })
+          .catch(error => {
+              // Handle any errors
+              console.error('Error:', error);
+          });
+      });
+      </script>
+      </body>
+      </html>
   </body>
 </html>
